@@ -44,4 +44,6 @@ You can invoke this service with the following payload:
       "objectFunction": "getObject" // or putObject
     }
 
+However we recommend modifying this service to contain the configuration within the service itself, as opposed to receiving it via the request for obvious security reasons.
+
 See the [AWS SDK Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property) for more information about what those parameters do.
