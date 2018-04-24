@@ -1,9 +1,9 @@
 {
-  "name": "@source4society/SCEPTER-service-template",
-  "version": "1.2.0",
-  "description": "Base template used for creating services. Add '@source4society/scepter-dynamodb-lib': '^0.0.16' for DynamoDB support",
+  "name": "@source4society/SCEPTER-S3PresignedURLService",
+  "version": "1.0.0",
+  "description": "A service for retrieving presigned urls for upload to S3",
   "main": "handler.js",
-  "repository": "git@github.com:source4societyorg/SCEPTER-service-template",
+  "repository": "git@github.com:source4societyorg/SCEPTER-S3PresignedURLService",
   "author": "Source4Society.Org",
   "license": "AGPL-3.0",
   "private": false,
@@ -14,7 +14,7 @@
   "dependencies": {
     "@source4society/scepter-handlerutilities-lib": "^1.1.1",
     "@source4society/scepter-utility-lib": "^0.0.26",
-    "aws-sdk": "^2.149.0",
+    "aws-sdk": "^2.227.1",
     "immutable": "^3.8.2"
   },
   "devDependencies": {

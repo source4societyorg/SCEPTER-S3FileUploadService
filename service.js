@@ -1,24 +1,27 @@
 'use strict'
 const utilities = require('@source4society/scepter-utility-lib')
-// const DynamoDBLib = require('@source4society/scepter-dynamodb-lib')
+const AWSLib = require('aws-sdk')
 const fromJS = require('immutable').fromJS
-class HelloService {
-  constructor (injectedStage, injectedCredentialsPath, injectedServicesPath, injectedParametersPath, injectedDynamoDB) {
+class S3PresignedURLService {
+  constructor (injectedStage, injectedCredentialsPath, injectedServicesPath, injectedParametersPath, injectedAWS) {
     const stage = utilities.valueOrDefault(injectedStage, process.env.STAGE)
     const credentialsPath = utilities.valueOrDefault(injectedCredentialsPath, './credentials')
     const servicesPath = utilities.valueOrDefault(injectedServicesPath, './services')
     const parametersPath = utilities.valueOrDefault(injectedParametersPath, './parameters')
-    // const DynamoDB = utilities.valueOrDefault(injectedDynamoDB, DynamoDBLib)
+    const AWS = utilities.valueOrDefault(injectedAWS, AWSLib)
     this.environment = stage
     this.credentials = fromJS(require(credentialsPath))
     this.services = fromJS(require(servicesPath))
     this.parameters = fromJS(require(parametersPath))
-    // this.dynamoDB = new DynamoDB()
-    // this.dynamoDB.setConfiguration(this.credentials, this.environment)
+    this.AWS = AWS
   }
 
-  hello (helloCallback) {
-    helloCallback(null, 'hello world')
+  getSignedUrl (uploadCallback, objectFunction, bucketName, fileKey, injectedAWS) {
+    const AWS = utilities.valueOrDefault(injectedAWS, this.AWS)
+    const s3 = new AWS.S3({apiVersion: '2006-03-01'})
+    const params = { Bucket: bucketName, Key: fileKey }
+    const signedUrl = s3.getSignedUrl(objectFunction, params)
+    uploadCallback(null, signedUrl)
   }
 
   prepareErrorResponse (error, injectedEnvironment) {
@@ -38,4 +41,4 @@ class HelloService {
   }
 }
 
-module.exports = HelloService
+module.exports = S3PresignedURLService

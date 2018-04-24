@@ -11,16 +11,30 @@ test('service constructor defines properties', () => {
   expect(service.services).toEqual(fromJS(servicesTest))
 })
 
-test('hello function executes callback with proper data passed into success parameter', (done) => {
+test('getSignedUrl will create an AWS S3 object from the SDK and invoke the proper method with proper parameters', (done) => {
+  const mockSignedUrl = 'mockSignedUrl'
+  const mockObjectFunction = 'mockObjectFunction'
+  const mockBucketName = 'mockBucketName'
+  const mockFileKey = 'mockFileKey'
+  const mockAWS = {
+    S3: class mockS3 {
+      getSignedUrl (objectFunction, params) {
+        expect(objectFunction).toEqual(mockObjectFunction)
+        expect(params).toEqual({ Bucket: mockBucketName, Key: mockFileKey })
+        return mockSignedUrl
+      }
+    }
+  }
+
   const mockCallback = (err, data) => {
     expect(err).toBeNull()
-    expect(data).toEqual('hello world')
+    expect(data).toEqual(mockSignedUrl)
     done()
   }
 
   const Service = require('../service')
   const service = new Service('test1', './test/credentials-test.json', './test/parameters-test.json', './test/services-test.json')
-  service.hello(mockCallback)
+  service.getSignedUrl(mockCallback, mockObjectFunction, mockBucketName, mockFileKey, mockAWS)
 })
 
 test('prepareErrorResponse returns the error output of the service', () => {
